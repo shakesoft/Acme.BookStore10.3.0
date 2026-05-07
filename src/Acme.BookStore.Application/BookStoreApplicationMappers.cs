@@ -49,3 +49,6 @@ public partial class AuthorToAuthorLookupDtoMapper : MapperBase<Author, AuthorLo
 
     public override partial void Map(Author source, AuthorLookupDto destination);
 }
+
+
+

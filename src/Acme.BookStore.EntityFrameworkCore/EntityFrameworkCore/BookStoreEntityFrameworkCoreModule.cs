@@ -17,7 +17,7 @@ using Volo.Abp.TextTemplateManagement.EntityFrameworkCore;
 using Volo.Saas.EntityFrameworkCore;
 using Volo.Abp.Gdpr;
 using Volo.Abp.Studio;
-using Volo.Abp.TenantManagement.EntityFrameworkCore;
+
 
 namespace Acme.BookStore.EntityFrameworkCore;
 
@@ -37,7 +37,7 @@ namespace Acme.BookStore.EntityFrameworkCore;
     typeof(AbpGdprEntityFrameworkCoreModule),
     typeof(BlobStoringDatabaseEntityFrameworkCoreModule)
     )]
-[DependsOn(typeof(AbpTenantManagementEntityFrameworkCoreModule))]
+
     public class BookStoreEntityFrameworkCoreModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
