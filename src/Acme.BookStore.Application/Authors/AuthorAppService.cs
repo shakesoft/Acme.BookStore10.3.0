@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Acme.BookStore.Permissions;
+using Acme.BookStore.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Settings;
 
 namespace Acme.BookStore.Authors;
 
@@ -14,13 +16,16 @@ public class AuthorAppService : BookStoreAppService, IAuthorAppService
 {
     private readonly IAuthorRepository _authorRepository;
     private readonly AuthorManager _authorManager;
+    private readonly ISettingProvider _settingProvider;
 
     public AuthorAppService(
         IAuthorRepository authorRepository,
-        AuthorManager authorManager)
+        AuthorManager authorManager,
+        ISettingProvider settingProvider)
     {
         _authorRepository = authorRepository;
         _authorManager = authorManager;
+        _settingProvider = settingProvider;
     }
 
     //...SERVICE METHODS WILL COME HERE...
@@ -60,6 +65,14 @@ public class AuthorAppService : BookStoreAppService, IAuthorAppService
     [Authorize(BookStorePermissions.Authors.Create)]
     public async Task<AuthorDto> CreateAsync(CreateAuthorDto input)
     {
+        var maxAuthorCount = await _settingProvider.GetAsync<int>(BookStoreSettings.MaxAuthorsCount);
+
+        var currentAuthorCount = await _authorRepository.CountAsync();
+        if(currentAuthorCount >= maxAuthorCount)
+        {
+            throw new InvalidOperationException("The maximum number of authors has been reached.");
+        }
+
         var author = await _authorManager.CreateAsync(
             input.Name,
             input.BirthDate,

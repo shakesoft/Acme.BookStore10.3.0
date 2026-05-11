@@ -1,15 +1,17 @@
-﻿using System;
+﻿using Acme.BookStore.Authors;
+using Acme.BookStore.Permissions;
+using Acme.BookStore.Settings;
+using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using Acme.BookStore.Authors;
-using Acme.BookStore.Permissions;
-using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Settings;
 
 namespace Acme.BookStore.Books;
 
@@ -22,15 +24,19 @@ public class BookAppService :
         PagedAndSortedResultRequestDto, //Used for paging/sorting
         CreateUpdateBookDto>, //Used to create/update a book
     IBookAppService //implement the IBookAppService
+
 {
     private readonly IAuthorRepository _authorRepository;
+    private readonly ISettingProvider _settingProvider;
 
     public BookAppService(
         IRepository<Book, Guid> repository,
-        IAuthorRepository authorRepository)
+        IAuthorRepository authorRepository,
+        ISettingProvider settingProvider)
         : base(repository)
     {
         _authorRepository = authorRepository;
+        _settingProvider = settingProvider;
         GetPolicyName = BookStorePermissions.Books.Default;
         GetListPolicyName = BookStorePermissions.Books.Default;
         CreatePolicyName = BookStorePermissions.Books.Create;
@@ -124,4 +130,20 @@ public class BookAppService :
 
         return $"book.{sorting}";
     }
+
+    public async Task<BookDto> CreateAsync(CreateUpdateBookDto input)
+    {
+        var maxBookCount = await _settingProvider.GetAsync<int>(BookStoreSettings.MaxBooksCount);
+
+        var currentBookCount = await Repository.CountAsync();
+        if (currentBookCount >= maxBookCount)
+        {
+            throw new InvalidOperationException("The maximum number of books has been reached.");
+        }
+
+        var book = ObjectMapper.Map<CreateUpdateBookDto, Book>(input);
+        await Repository.InsertAsync(book);
+        return ObjectMapper.Map<Book, BookDto>(book);
+    }
 }
+        
