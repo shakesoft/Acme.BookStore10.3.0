@@ -1,0 +1,25 @@
+﻿@model List<ErrorDto>
+
+<abp-card>
+    <abp-card-header>
+        <h5>Recent Errors</h5>
+    </abp-card-header>
+
+    <abp-card-body>
+        @if (!Model.Any())
+        {
+            <p>No errors 🎉</p>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var err in Model)
+                {
+                    <li class="list-group-item text-danger">
+                        @err.Time.ToString("HH:mm") - @err.Message
+                    </li>
+                }
+            </ul>
+        }
+    </abp-card-body>
+</abp-card>

@@ -1,0 +1,13 @@
+﻿@model SystemHealthDto
+
+<abp-card>
+    <abp-card-header>
+        <h5>System Health</h5>
+    </abp-card-header>
+
+    <abp-card-body>
+        <p><strong>Status:</strong> @Model.Status</p>
+        <p><strong>DB:</strong> @Model.DbStatus</p>
+        <p><strong>Response Time:</strong> @Model.Duration ms</p>
+    </abp-card-body>
+</abp-card>

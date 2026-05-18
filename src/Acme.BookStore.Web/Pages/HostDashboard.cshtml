@@ -10,6 +10,9 @@
 @using Volo.Abp.AuditLogging.Web.Pages.Shared.Components.ErrorRateWidget
 @using Volo.Saas.Host.Pages.Shared.Components.SaasEditionPercentageWidget
 @using Volo.Saas.Host.Pages.Shared.Components.SaasLatestTenantsWidget
+@using Acme.BookStore.Web.Components.SystemHealth
+@using Acme.BookStore.Web.Components.LiveLogs
+@using Acme.BookStore.Web.Components.RecentErrors
 @inject IHtmlLocalizer<BookStoreResource> L
 @inject IWidgetManager WidgetManager
 @model Acme.BookStore.Web.Pages.HostDashboardModel
@@ -78,6 +81,26 @@
         {
             <abp-column size-md="_12" size-lg="_6">
                 @await Component.InvokeAsync(typeof(SaasLatestTenantsWidgetViewComponent))
+            </abp-column>
+        }
+        @if (await WidgetManager.IsGrantedAsync(typeof(SystemHealthViewComponent)))
+        {
+            <abp-column size-md="_12" size-lg="_4">
+                @await Component.InvokeAsync(typeof(SystemHealthViewComponent))
+            </abp-column>
+        }
+
+        @if (await WidgetManager.IsGrantedAsync(typeof(LiveLogsViewComponent)))
+        {
+            <abp-column size-md="_12" size-lg="_4">
+                @await Component.InvokeAsync(typeof(LiveLogsViewComponent))
+            </abp-column>
+        }
+
+        @if (await WidgetManager.IsGrantedAsync(typeof(RecentErrorsViewComponent)))
+        {
+            <abp-column size-md="_12" size-lg="_4">
+                @await Component.InvokeAsync(typeof(RecentErrorsViewComponent))
             </abp-column>
         }
     </abp-row>

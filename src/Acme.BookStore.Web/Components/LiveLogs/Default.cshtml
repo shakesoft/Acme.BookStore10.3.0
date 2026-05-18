@@ -1,0 +1,18 @@
+﻿@model List<LiveLogDto>
+
+<abp-card>
+    <abp-card-header>
+        <h5>Live Logs</h5>
+    </abp-card-header>
+
+    <abp-card-body>
+        <ul class="list-group">
+            @foreach (var log in Model)
+            {
+                <li class="list-group-item">
+                    @log.Action - @log.Time.ToString("HH:mm:ss")
+                </li>
+            }
+        </ul>
+    </abp-card-body>
+</abp-card>
