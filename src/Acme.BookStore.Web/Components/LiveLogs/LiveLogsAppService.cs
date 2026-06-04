@@ -23,7 +23,7 @@ public class LiveLogsAppService : ApplicationService
         var logs = await query
             .Where(x => x.HttpMethod != null)
             .OrderByDescending(x => x.ExecutionTime)
-            .Take(10)
+            .Take(100)
             .ToListAsync();
 
         return logs.Select(x => new LiveLogDto
